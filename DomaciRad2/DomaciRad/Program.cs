@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace PrvaVjezba
 {
@@ -36,6 +37,8 @@ namespace PrvaVjezba
 
             int x = int.Parse(Console.ReadLine());
             int a = 1, z = 0;
+            int brojac = 0;
+            Random rnd = new Random();
 
             switch (x)
             {
@@ -49,7 +52,15 @@ namespace PrvaVjezba
                     foreach (KeyValuePair<int, string> kvp in PlayList)
                     {
                         if (kvp.Key == y)
+                        {
                             Console.WriteLine("{1}", kvp.Value);
+                            brojac++;
+                        }
+                    }
+                    if(brojac == 0)
+                    {
+                        Console.WriteLine("Broj koji ste unijeli ne postoji");
+                        break;
                     }
                     break;
                 case 3:
@@ -58,21 +69,31 @@ namespace PrvaVjezba
                     foreach (KeyValuePair<int, string> kvp in PlayList)
                     {
                         if (kvp.Value == song)
+                        {
                             Console.WriteLine("{0}.", kvp.Key);
+                            brojac++;
+                        }
+                    }
+                    if(brojac == 0)
+                    {
+                        Console.WriteLine("Ime pjesme koje ste upisali se ne nalazi u listi");
+                        break;
                     }
                     break;
                 case 4:
                     Console.WriteLine("Unesite novu pjesmu:");
                     song = Console.ReadLine();
-                    y = 0;
 
                     foreach (KeyValuePair<int, string> kvp in PlayList)
                     {
                         if (kvp.Value == song)
-                            y++;
+                            brojac++;
                     }
-                    if (y == 1)
+                    if (brojac == 1)
+                    {
                         Console.WriteLine("Ova pjesma vec postoji");
+                        break;
+                    }
                     else
                         PlayList.Add(PlayList.Count + 1, song);
 
@@ -83,7 +104,15 @@ namespace PrvaVjezba
                     foreach (KeyValuePair<int, string> kvp in PlayList)
                     {
                         if (kvp.Key == y)
+                        {
                             PlayList.Remove(kvp.Key);
+                            brojac++;
+                        }
+                    }
+                    if(brojac == 0)
+                    {
+                        Console.WriteLine("Redni broj koji ste unijeli ne postoji u listi");
+                        break;
                     }
                     foreach (KeyValuePair<int, string> kvp in PlayList)
                         Console.WriteLine("{0}. {1}", kvp.Key, kvp.Value);
@@ -94,7 +123,15 @@ namespace PrvaVjezba
                     foreach (KeyValuePair<int, string> kvp in PlayList)
                     {
                         if (kvp.Value == song)
+                        {
                             PlayList.Remove(kvp.Key);
+                            brojac++;
+                        }
+                    }
+                    if (brojac == 0)
+                    {
+                        Console.WriteLine("Ime pjesme koju ste unijeli ne postoji u listi");
+                        break;
                     }
                     foreach (KeyValuePair<int, string> kvp in PlayList)
                         Console.WriteLine("{0}. {1}", kvp.Key, kvp.Value);
@@ -121,10 +158,18 @@ namespace PrvaVjezba
                     {
                         if (kvp.Value == song)
                         {
+                            brojac++;
                             if (kvp.Key > y)
                                 a = 0;
                             z = kvp.Key;
                         }
+                        if (kvp.Key == y)
+                            brojac++;
+                    }
+                    if(brojac == 0)
+                    {
+                        Console.WriteLine("Pjesma ili redni broj koji ste unijeli nisu u playlisti");
+                        break;
                     }
                     if (a == 0)
                     {
@@ -149,6 +194,14 @@ namespace PrvaVjezba
                     break;
                 case 0:
                     Environment.Exit(0);
+                    break;
+                case 10:
+                    PlayList = PlayList.OrderBy(x => rnd.Next())
+                        .ToDictionary(item => item.Key, item => item.Value);
+
+                    foreach (KeyValuePair<int, string> kvp in PlayList)
+                        Console.WriteLine("{0}. {1}", kvp.Key, kvp.Value);
+
                     break;
 
                 default:
