@@ -38,173 +38,38 @@ namespace PrvaVjezba
                 Console.WriteLine("0 - Izlaz iz aplikacije");
 
                 int x = int.Parse(Console.ReadLine());
-                int a = 1, end = 0;
-                int counter = 0;
                 Random rnd = new Random();
 
                 switch (x)
                 {
                     case 1:
-                        foreach (KeyValuePair<int, string> kvp in PlayList)
-                            Console.WriteLine("{0}. {1}", kvp.Key, kvp.Value);
+                        PrintingTheEntireList(PlayList);
                         break;
                     case 2:
-                        Console.WriteLine("Unesite redni broj:");
-                        int y = int.Parse(Console.ReadLine());
-                        foreach (KeyValuePair<int, string> kvp in PlayList)
-                        {
-                            if (kvp.Key == y)
-                            {
-                                Console.WriteLine(kvp.Value);
-                                counter++;
-                            }
-                        }
-                        if (counter == 0)
-                        {
-                            Console.WriteLine("Broj koji ste unijeli ne postoji");
-                            break;
-                        }
-                        counter--;
+                        FindingNameByOrderNumber(PlayList);
                         break;
                     case 3:
-                        Console.WriteLine("Unesite ime pjesme:");
-                        string song = Console.ReadLine();
-                        foreach (KeyValuePair<int, string> kvp in PlayList)
-                        {
-                            if (kvp.Value == song)
-                            {
-                                Console.WriteLine(kvp.Key + ".");
-                                counter++;
-                            }
-                        }
-                        if (counter == 0)
-                        {
-                            Console.WriteLine("Ime pjesme koje ste upisali se ne nalazi u listi");
-                            break;
-                        }
-                        counter--;
+                        FindingOrderNumberByName(PlayList);
                         break;
                     case 4:
-                        Console.WriteLine("Unesite novu pjesmu:");
-                        song = Console.ReadLine();
-
-                        foreach (KeyValuePair<int, string> kvp in PlayList)
-                        {
-                            if (kvp.Value == song)
-                                counter++;
-                        }
-                        if (counter == 1)
-                        {
-                            Console.WriteLine("Ova pjesma vec postoji");
-                            break;
-                        }
-                        else
-                            PlayList.Add(PlayList.Count + 1, song);
-                        counter--;
+                        EnteringANewSong(PlayList);
                         break;
                     case 5:
-                        Console.WriteLine("Unesite redni broj:");
-                        y = int.Parse(Console.ReadLine());
-                        foreach (KeyValuePair<int, string> kvp in PlayList)
-                        {
-                            if (kvp.Key == y)
-                            {
-                                counter++;
-                            }
-                        }
-                        if (counter == 0)
-                        {
-                            Console.WriteLine("Redni broj koji ste unijeli ne postoji u listi");
-                            break;
-                        }
-                        end = PlayList.Count;
-                        while (y <= end-1)
-                        {
-                            PlayList[y] = PlayList[y + 1];
-                            y++;
-                        }
-                        PlayList.Remove(PlayList.Count);
-                        counter--;
+                        RemovingSongByOrderNumber(PlayList);
                         break;
                     case 6:
-                        Console.WriteLine("Unesite ime pjesme:");
-                        song = Console.ReadLine();
-                        foreach (KeyValuePair<int, string> kvp in PlayList)
-                        {
-                            if (kvp.Value == song)
-                            {
-                                a = kvp.Key;
-                                counter++;
-                            }
-                        }
-                        if (counter == 0)
-                        {
-                            Console.WriteLine("Ime pjesme koju ste unijeli ne postoji u listi");
-                            break;
-                        }
-                        end = PlayList.Count;
-                        while (a <= end - 1)
-                        {
-                            PlayList[a] = PlayList[a + 1];
-                            a++;
-                        }
-                        PlayList.Remove(PlayList.Count);
-                        counter--;
+                        RemovingSongByName(PlayList);
                         break;
-
                     case 7:
                         PlayList.Clear();
                         break;
 
                     case 8:
-                        Console.WriteLine("Unesite redni broj pjesme koje zelite editirati:");
-                        y = int.Parse(Console.ReadLine());
-                        Console.WriteLine("Unesite edit:");
-                        song = Console.ReadLine();
-                        PlayList[y] = song;
+                        EditingSongName(PlayList);
                         break;
 
                     case 9:
-                        Console.WriteLine("Unesite pjesmu koju zelite zamijeniti");
-                        song = Console.ReadLine();
-                        Console.WriteLine("Unesite na koji redni broj je zelite stavit");
-                        y = int.Parse(Console.ReadLine());
-                        foreach (KeyValuePair<int, string> kvp in PlayList)
-                        {
-                            if (kvp.Value == song)
-                            {
-                                counter++;
-                                if (kvp.Key > y)
-                                    a = 0;
-                                end = kvp.Key;
-                            }
-                            if (kvp.Key == y)
-                                counter++;
-                        }
-                        if (counter == 0)
-                        {
-                            Console.WriteLine("Pjesma ili redni broj koji ste unijeli nisu u playlisti");
-                            break;
-                        }
-                        if (a == 0)
-                        {
-                            while (end >= y + 1)
-                            {
-                                PlayList[end] = PlayList[end - 1];
-                                end--;
-                            }
-                            PlayList[y] = song;
-                        }
-                        else
-                        {
-                            while (end <= y - 1)
-                            {
-                                PlayList[end] = PlayList[end + 1];
-                                end++;
-                            }
-                            PlayList[y] = song;
-                        }
-                        counter--;
+                        ChangingOrderNumberForASong(PlayList);
                         break;
                     case 0:
                         Environment.Exit(0);
@@ -213,7 +78,6 @@ namespace PrvaVjezba
                         PlayList = PlayList.OrderBy(x => rnd.Next())
                             .ToDictionary(item => item.Key, item => item.Value);
                         break;
-
                     default:
                         Console.WriteLine("Niste upisali dobar broj");
                         break;
@@ -223,6 +87,203 @@ namespace PrvaVjezba
             }
             while (true);
         }
+        static void PrintingTheEntireList(Dictionary<int, string> Playlist)
+        {
+            foreach (KeyValuePair<int, string> kvp in Playlist)
+                Console.WriteLine(kvp.Key + ". " + kvp.Value);
+        }
+        static void FindingNameByOrderNumber(Dictionary<int, string> Playlist)
+        {
+            var counter = 0;
 
+            Console.WriteLine("Unesite redni broj:");
+            var orderNumber = int.Parse(Console.ReadLine());
+
+            foreach (KeyValuePair<int, string> kvp in Playlist)
+            {
+                if (kvp.Key == orderNumber)
+                {
+                    Console.WriteLine(kvp.Value);
+                    counter++;
+                }
+            }
+            if (counter == 0)
+            {
+                Console.WriteLine("Broj koji ste unijeli ne postoji");
+                return;
+            }
+            return;
+        }
+        static void FindingOrderNumberByName(Dictionary<int, string> Playlist)
+        {
+            var counter = 0;
+
+            Console.WriteLine("Unesite ime pjesme:");
+            var song = Console.ReadLine();
+
+            foreach (KeyValuePair<int, string> kvp in Playlist)
+            {
+                if (kvp.Value == song)
+                {
+                    Console.WriteLine(kvp.Key + ".");
+                    counter++;
+                }
+            }
+            if (counter == 0)
+            {
+                Console.WriteLine("Ime pjesme koje ste upisali se ne nalazi u listi");
+                return;
+            }
+            return;
+        }
+        static void EnteringANewSong(Dictionary<int, string> Playlist)
+        {
+            var counter = 0;
+
+            Console.WriteLine("Unesite novu pjesmu:");
+            var song = Console.ReadLine();
+
+            foreach (KeyValuePair<int, string> kvp in Playlist)
+            {
+                if (kvp.Value == song)
+                    counter++;
+            }
+            if (counter == 1)
+            {
+                Console.WriteLine("Ova pjesma vec postoji");
+                return;
+            }
+            else
+                Playlist.Add(Playlist.Count + 1, song);
+            return;
+        }
+        static void RemovingSongByOrderNumber(Dictionary<int, string> Playlist)
+        {
+            var counter = 0;
+
+            Console.WriteLine("Unesite redni broj:");
+            var orderNumber = int.Parse(Console.ReadLine());
+            foreach (KeyValuePair<int, string> kvp in Playlist)
+            {
+                if (kvp.Key == orderNumber)
+                {
+                    counter++;
+                }
+            }
+            if (counter == 0)
+            {
+                Console.WriteLine("Redni broj koji ste unijeli ne postoji u listi");
+                return;
+            }
+            var endOfPlaylist = Playlist.Count;
+            while (orderNumber <= endOfPlaylist - 1)
+            {
+                Playlist[orderNumber] = Playlist[orderNumber + 1];
+                orderNumber++;
+            }
+            Playlist.Remove(Playlist.Count);
+            return;
+        }
+        static void RemovingSongByName(Dictionary<int, string> Playlist)
+        {
+            var counter = 0;
+            var orderNumber = 0;
+
+            Console.WriteLine("Unesite ime pjesme:");
+            var song = Console.ReadLine();
+
+            foreach (KeyValuePair<int, string> kvp in Playlist)
+            {
+                if (kvp.Value == song)
+                {
+                    orderNumber = kvp.Key;
+                    counter++;
+                }
+            }
+            if (counter == 0)
+            {
+                Console.WriteLine("Ime pjesme koju ste unijeli ne postoji u listi");
+                return;
+            }
+            var endOfPlaylist = Playlist.Count;
+            while (orderNumber <= endOfPlaylist - 1)
+            {
+                Playlist[orderNumber] = Playlist[orderNumber + 1];
+                orderNumber++;
+            }
+            Playlist.Remove(Playlist.Count);
+            return;
+
+        }
+        static void EditingSongName(Dictionary<int, string> Playlist) 
+        {
+            var counter = 0;
+
+            Console.WriteLine("Unesite redni broj pjesme koje zelite editirati:");
+            var orderNumber = int.Parse(Console.ReadLine());
+
+            Console.WriteLine("Unesite edit:");
+            var song = Console.ReadLine();
+            foreach(KeyValuePair<int,string> kvp in Playlist)
+            {
+                if (kvp.Key == orderNumber)
+                    counter++;
+            }
+            if(counter == 0)
+            {
+                Console.WriteLine("Redni broj pjesme koji ste unijeli ne postoji");
+                return;
+            }
+            Playlist[orderNumber] = song;
+            return;
+        }
+        static void ChangingOrderNumberForASong(Dictionary<int, string> Playlist)
+        {
+            var counter = 0;
+            var checkingWetherLessOrMore = 0;
+            var endingOrderNumber = 0;
+
+            Console.WriteLine("Unesite pjesmu koju zelite zamijeniti");
+            var song = Console.ReadLine();
+
+            Console.WriteLine("Unesite na koji redni broj je zelite staviti");
+            var orderNumber = int.Parse(Console.ReadLine());
+            foreach (KeyValuePair<int, string> kvp in Playlist)
+            {
+                if (kvp.Value == song)
+                {
+                    counter++;
+                    if (kvp.Key > orderNumber)
+                        checkingWetherLessOrMore = 0;
+                        endingOrderNumber = kvp.Key;
+                }
+                if (kvp.Key == orderNumber)
+                    counter++;
+            }
+            if (counter == 0)
+            {
+                Console.WriteLine("Pjesma ili redni broj koji ste unijeli nisu u playlisti");
+                return;
+            }
+            if (checkingWetherLessOrMore == 0)
+            {
+                while (endingOrderNumber >= orderNumber + 1)
+                {
+                    Playlist[endingOrderNumber] = Playlist[endingOrderNumber - 1];
+                    endingOrderNumber--;
+                }
+                Playlist[orderNumber] = song;
+            }
+            else
+            {
+                while (endingOrderNumber <= orderNumber - 1)
+                {
+                    Playlist[endingOrderNumber] = Playlist[endingOrderNumber + 1];
+                    endingOrderNumber++;
+                }
+                Playlist[orderNumber] = song;
+            }
+            return;
+        }
     }
 }
