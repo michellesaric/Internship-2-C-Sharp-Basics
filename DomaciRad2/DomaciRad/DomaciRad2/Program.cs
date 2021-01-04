@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DomaciRad;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -24,32 +25,21 @@ namespace PrvaVjezba
             };
             do
             {
-                Console.WriteLine("Odaberite akciju:");
-                Console.WriteLine("1 - Ispis cijele liste");
-                Console.WriteLine("2 - Ipis imena pjesme unosom pripadajuceg rednog broja");
-                Console.WriteLine("3 - Ispis rednog broja pjesme unosom pripadajućeg imena");
-                Console.WriteLine("4 - Unos nove pjesme");
-                Console.WriteLine("5 - Brisanje pjesme po rednom broju");
-                Console.WriteLine("6 - Brisanje pjesme po imenu");
-                Console.WriteLine("7 - Brisanje cijele liste");
-                Console.WriteLine("8 - Uređivanje imena pjesme");
-                Console.WriteLine("9 - Uređivanje rednog broja pjesme, odnosno premještanje pjesme na novi redni broj u listi");
-                Console.WriteLine("10 - Shuffle pjesama");
-                Console.WriteLine("0 - Izlaz iz aplikacije");
+                Print.Menu();
 
-                int x = int.Parse(Console.ReadLine());
+                var option = int.Parse(Console.ReadLine());
                 Random rnd = new Random();
 
-                switch (x)
+                switch (option)
                 {
                     case 1:
-                        PrintingTheEntireList(PlayList);
+                        Print.List();
                         break;
                     case 2:
-                        FindingNameByOrderNumber(PlayList);
+                        Find.ANameByAnOrderNumber();
                         break;
                     case 3:
-                        FindingOrderNumberByName(PlayList);
+                        Find.AnOrderNumberByAName();
                         break;
                     case 4:
                         EnteringANewSong(PlayList);
@@ -63,7 +53,6 @@ namespace PrvaVjezba
                     case 7:
                         PlayList.Clear();
                         break;
-
                     case 8:
                         EditingSongName(PlayList);
                         break;
@@ -75,8 +64,7 @@ namespace PrvaVjezba
                         Environment.Exit(0);
                         break;
                     case 10:
-                        PlayList = PlayList.OrderBy(x => rnd.Next())
-                            .ToDictionary(item => item.Key, item => item.Value);
+                        Shuffle(PlayList);
                         break;
                     default:
                         Console.WriteLine("Niste upisali dobar broj");
@@ -86,55 +74,6 @@ namespace PrvaVjezba
                 Console.WriteLine();
             }
             while (true);
-        }
-        static void PrintingTheEntireList(Dictionary<int, string> Playlist)
-        {
-            foreach (KeyValuePair<int, string> kvp in Playlist)
-                Console.WriteLine(kvp.Key + ". " + kvp.Value);
-        }
-        static void FindingNameByOrderNumber(Dictionary<int, string> Playlist)
-        {
-            var counter = 0;
-
-            Console.WriteLine("Unesite redni broj:");
-            var orderNumber = int.Parse(Console.ReadLine());
-
-            foreach (KeyValuePair<int, string> kvp in Playlist)
-            {
-                if (kvp.Key == orderNumber)
-                {
-                    Console.WriteLine(kvp.Value);
-                    counter++;
-                }
-            }
-            if (counter == 0)
-            {
-                Console.WriteLine("Broj koji ste unijeli ne postoji");
-                return;
-            }
-            return;
-        }
-        static void FindingOrderNumberByName(Dictionary<int, string> Playlist)
-        {
-            var counter = 0;
-
-            Console.WriteLine("Unesite ime pjesme:");
-            var song = Console.ReadLine();
-
-            foreach (KeyValuePair<int, string> kvp in Playlist)
-            {
-                if (kvp.Value == song)
-                {
-                    Console.WriteLine(kvp.Key + ".");
-                    counter++;
-                }
-            }
-            if (counter == 0)
-            {
-                Console.WriteLine("Ime pjesme koje ste upisali se ne nalazi u listi");
-                return;
-            }
-            return;
         }
         static void EnteringANewSong(Dictionary<int, string> Playlist)
         {
@@ -284,6 +223,26 @@ namespace PrvaVjezba
                 Playlist[orderNumber] = song;
             }
             return;
+        }
+        static void Shuffle(Dictionary<int, string> Playlist)
+        {
+            var pomocnaLista = new List<int>();
+            Random rnd = new Random();
+
+
+            for (int i = 0; i < Playlist.Count; i++)
+                pomocnaLista[i] = i + 1;
+
+            while(pomocnaLista.Count > 0)
+            {
+                var RandomNumber = rnd.Next(Playlist.Count);
+                if(pomocnaLista[RandomNumber] == RandomNumber + 1)
+                {
+                    var a = pomocnaLista[RandomNumber];
+                    Console.WriteLine(Playlist[a]);
+                    pomocnaLista.Remove(RandomNumber);
+                }
+            }
         }
     }
 }
